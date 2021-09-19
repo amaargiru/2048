@@ -7,24 +7,10 @@ namespace Console_App;
 
 internal static class ConsoleIo
 {
-    public static Direction? KeyScan()
-    {
-        var input = Console.ReadKey(true);
-
-        return input.Key switch
-        {
-            ConsoleKey.UpArrow => Direction.Up,
-            ConsoleKey.DownArrow => Direction.Down,
-            ConsoleKey.LeftArrow => Direction.Left,
-            ConsoleKey.RightArrow => Direction.Right,
-            _ => null
-        };
-    }
-
     public static void ScreenView(GameState output, Color textFontColor, Color scoreColor)
     {
         Console.Clear();
-        Console.WriteLine();
+        Console.Write(Environment.NewLine);
 
         for (var rows = 0; rows < output.Board.GetLength(0); rows++)
         {
@@ -33,8 +19,7 @@ internal static class ConsoleIo
                 Console.Write($"{output.Board[rows, cols],5}", Colors.FontColor(output.Board[rows, cols]));
             }
 
-            Console.WriteLine();
-            Console.WriteLine();
+            Console.Write(Environment.NewLine + Environment.NewLine);
         }
 
         if (output.IsGameOver)
@@ -43,6 +28,6 @@ internal static class ConsoleIo
         }
 
         Console.WriteLine($"Score: {output.Score}" + Environment.NewLine, scoreColor);
-        Console.Write("Use arrow keys to move the tiles. Press Ctrl-C to exit.", textFontColor);
+        Console.Write("Use arrow keys to move the tiles. Press N for new game, Q to exit.", textFontColor);
     }
 }

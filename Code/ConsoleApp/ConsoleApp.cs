@@ -1,9 +1,10 @@
-﻿using Colorful;
-using Console_App;
+﻿using Console_App;
 using GameCore;
 using Microsoft.Extensions.Configuration;
 using System.Drawing;
 using System.IO;
+using System;
+using Console = Colorful.Console;
 
 namespace ConsoleApp;
 
@@ -48,16 +49,35 @@ internal static class ConsoleApp
 
         // Start game
         var game = new Game();
-
         var gameState = game.Init(boardRows, boardCols, digitsOnNewBoard);
-
         Console.CursorVisible = false;
 
         while (true)
         {
             ConsoleIo.ScreenView(gameState, textFontColor, scoreColor);
 
-            var direction = ConsoleIo.KeyScan();
+            Direction? direction = null;
+            var input = Console.ReadKey(true);
+
+            if (input.Key == ConsoleKey.Q) // Exit game
+            {
+                Environment.Exit(0);
+            }
+            else if (input.Key == ConsoleKey.N) // New game
+            {
+                gameState = game.Init(boardRows, boardCols, digitsOnNewBoard);
+            }
+            else
+            {
+                direction = input.Key switch
+                {
+                    ConsoleKey.UpArrow => Direction.Up,
+                    ConsoleKey.DownArrow => Direction.Down,
+                    ConsoleKey.LeftArrow => Direction.Left,
+                    ConsoleKey.RightArrow => Direction.Right,
+                    _ => null
+                };
+            }
 
             if (direction is not null)
             {
