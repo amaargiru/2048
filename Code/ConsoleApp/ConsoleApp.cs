@@ -47,7 +47,9 @@ internal static class ConsoleApp
             : defaultHardcodeTextFontColor;
 
         // Start game
-        var gameState = Game.Init(boardRows, boardCols, digitsOnNewBoard);
+        var game = new Game();
+
+        var gameState = game.Init(boardRows, boardCols, digitsOnNewBoard);
 
         Console.CursorVisible = false;
 
@@ -59,7 +61,7 @@ internal static class ConsoleApp
 
             if (direction is not null)
             {
-                gameState = Game.NextState(gameState, direction, 1);
+                gameState = game.NextState(gameState, direction, 1);
             }
         }
     }

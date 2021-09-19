@@ -12,12 +12,12 @@ public enum Direction
     Left
 }
 
-public static class Game
+public class Game
 {
     private static readonly Random random = new();
 
     // Генерация начального состояния игрового поля
-    public static GameState Init(int rows, int cols, int tilesOnNewBoard)
+    public GameState Init(int rows, int cols, int tilesOnNewBoard)
     {
         if (tilesOnNewBoard > rows * cols)
         {
@@ -46,7 +46,7 @@ public static class Game
     }
 
     // Вычисление следующей конфигурации игрового поля после хода игрока
-    public static GameState NextState(GameState inputState, Direction? direction, int newSlots)
+    public GameState NextState(GameState inputState, Direction? direction, int newSlots)
     {
         if (newSlots > inputState.Board.GetLength(0) * inputState.Board.GetLength(1))
             throw new ArgumentOutOfRangeException
@@ -79,7 +79,7 @@ public static class Game
         return nextState;
     }
 
-    private static GameState Update(GameState inputState, Direction? direction)
+    private GameState Update(GameState inputState, Direction? direction)
     {
         var updateState = new GameState
         {
@@ -161,7 +161,7 @@ public static class Game
     }
 
     // Добавление новых ячеек на игровое поле
-    private static ulong[,] AddNewRandomTiles(ulong[,] board, int newDigits)
+    private ulong[,] AddNewRandomTiles(ulong[,] board, int newDigits)
     {
         // Список всех свободных позиций
         var freeSlots = new List<(int x, int y)>();
@@ -191,7 +191,7 @@ public static class Game
         return board;
     }
 
-    private static bool TryToMove(ulong[,] board)
+    private bool TryToMove(ulong[,] board)
     {
         foreach (Direction dir in Enum.GetValues(typeof(Direction)))
         {
