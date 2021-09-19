@@ -13,8 +13,10 @@ public class GameState
         set
         {
             if (value.GetLength(0) < 2 || value.GetLength(1) < 2)
+            {
                 throw new ArgumentOutOfRangeException(
-                    "Число строк и столбцов игрового поля должно быть больше 2.");
+                    $"Number of {(value.GetLength(0) < 2 ? "rows" : "columns")} must be greater than 1");
+            }
 
             _board = value;
         }
@@ -26,8 +28,10 @@ public class GameState
         set
         {
             if (value % 2 != 0)
+            {
                 throw new ArgumentOutOfRangeException(
-                    $"Значение набранных очков должно быть четным числом. {value} - ошибочное значение.");
+                    $"The value of the scored points must be an even number. {value} is a wrong value.");
+            }
 
             _score = value;
         }
@@ -37,9 +41,21 @@ public class GameState
 
     public override bool Equals(object obj)
     {
-        if (obj is null) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != GetType()) return false;
+        if (obj is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
         return Equals((GameState)obj);
     }
 
@@ -55,8 +71,11 @@ public class GameState
         return HashCode.Combine(Board, Score, IsGameOver);
     }
 
+    // Only for debug information in case of tests error
     public override string ToString()
     {
-        return $"Board: {Utility.TwoDimensionalArrayToString(Board)}, Score: {Score}, IsGameOver: {IsGameOver}";
+        return $"Board: {Utility.TwoDimensionalArrayToString(Board)}," +
+               $"Score: {Score}," +
+               $"IsGameOver: {IsGameOver}";
     }
 }

@@ -1,9 +1,9 @@
-﻿using System.Drawing;
-using System.IO;
-using Colorful;
+﻿using Colorful;
 using Console_App;
 using GameCore;
 using Microsoft.Extensions.Configuration;
+using System.Drawing;
+using System.IO;
 
 namespace ConsoleApp;
 
@@ -18,7 +18,6 @@ internal static class ConsoleApp
         var defaultHardcodeTextFontColor = Color.LightGray;
 
         // Binding appsettings.json
-
         IConfigurationRoot appConfig = null;
         try
         {
@@ -48,10 +47,9 @@ internal static class ConsoleApp
             : defaultHardcodeTextFontColor;
 
         // Start game
-
         var gameState = Game.Init(boardRows, boardCols, digitsOnNewBoard);
 
-        ConsoleIo.HideCursor();
+        Console.CursorVisible = false;
 
         while (true)
         {
@@ -59,7 +57,10 @@ internal static class ConsoleApp
 
             var direction = ConsoleIo.KeyScan();
 
-            if (direction != null) gameState = Game.NextState(gameState, direction, 1);
+            if (direction is not null)
+            {
+                gameState = Game.NextState(gameState, direction, 1);
+            }
         }
     }
 }

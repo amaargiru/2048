@@ -4,10 +4,9 @@ using System.Text;
 
 namespace GameCore;
 
-// Вспомогательные методы
 public static class Utility
 {
-    // Подсчет ненулевых элементов двумерного массива
+    // Count of non-zero elements of 2D array
     public static int Calculate2DArrayNonZeroValues<T>(T[,] arr) where T : IComparable<T>
     {
         var nonZeros = 0;
@@ -26,7 +25,7 @@ public static class Utility
         return nonZeros;
     }
 
-    // Сравнение двух многомерных массивов
+    // Compare two 2D array
     public static bool CompareMultidimensionalArrays<T>(T[,] arr1, T[,] arr2)
     {
         return
@@ -35,7 +34,7 @@ public static class Utility
             arr1.Cast<T>().SequenceEqual(arr2.Cast<T>());
     }
 
-    // Преобразование двумерного массива в строку
+    // Convert a 2D array to a string
     public static string TwoDimensionalArrayToString<T>(T[,] arr)
     {
         var sb = new StringBuilder(string.Empty);
@@ -43,7 +42,7 @@ public static class Utility
         for (var i = 0; i < arr.GetLength(0); i++)
         {
             sb.Append(",{");
-            for (var j = 0; j < arr.GetLength(1); j++) sb.Append($"{arr[i, j]},");
+            for (var j = 0; j < arr.GetLength(1); j++) sb.Append(arr[i, j]).Append(',');
             sb.Append("}");
         }
 
