@@ -63,6 +63,13 @@ public static class Game
             return nextState;
         }
 
+        // Возможна ситуация, когда ход игрока не приводит к сложению и/или перемещению ячеек
+        // В таком случае новых ячеек добавлять не нужно
+        if (Utility.CompareMultidimensionalArrays(inputState.Board, nextState.Board))
+        {
+            return nextState;
+        }
+
         // Возможна ситуация, когда свободных ячеек меньше, чем количество
         // новых ячеек, которые мы желаем добавить
         var freeSlots = nextState.Board.Length - Utility.Calculate2DArrayNonZeroValues(nextState.Board);
