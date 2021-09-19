@@ -24,10 +24,10 @@ internal static class ConsoleIo
 
         if (output.IsGameOver)
         {
-            Console.Write("Game is over! ", scoreColor);
+            Console.Write(" Game is over! ", scoreColor);
         }
 
-        Console.WriteLine($"Score: {output.Score}" + Environment.NewLine, scoreColor);
-        Console.Write("Use arrow keys to move the tiles. Press N for new game, Q to exit.", textFontColor);
+        Console.WriteLine($" Score: {output.Score}" + Environment.NewLine, scoreColor);
+        Console.Write(" Use arrow keys to move the tiles. Press N for new game, Q to exit.", textFontColor);
     }
 }
