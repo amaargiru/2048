@@ -1,8 +1,6 @@
-﻿using Console_App;
+﻿//using Console_App;
 using GameCore;
 using Microsoft.Extensions.Configuration;
-using System.Drawing;
-using System.IO;
 using System;
 using Console = Colorful.Console;
 
@@ -12,49 +10,22 @@ internal static class ConsoleApp
 {
     private static void Main()
     {
-        const int defaultHardcodeBoardRows = 4; // Hardcoded values,
-        const int defaultHardcodeBoardCols = 4; // if appsettings.json file is missing or not correct
-        const int defaultHardcodeDigitsOnNewBoard = 2;
-        var defaultHardcodeScoreColor = Color.Red;
-        var defaultHardcodeTextFontColor = Color.LightGray;
+        var game = new Game();
+        var gameSettings = new GameSettings();
+        var colorSettings = new ColorSettings();
 
         // Binding appsettings.json
-        IConfigurationRoot appConfig = null;
-        try
-        {
-            appConfig = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", false, true)
-                .Build();
-        }
-        catch (FileNotFoundException)
-        {
-            Console.WriteLine("Missing appsettings.json, will use hard-coded variables. " +
-                              "Press any key to continue.", Color.Orange);
-            System.Console.ReadKey();
-        }
-
-        var appSettings = appConfig?.Get<Settings>();
-
-        var boardRows = appSettings?.BoardRows ?? defaultHardcodeBoardRows;
-        var boardCols = appSettings?.BoardCols ?? defaultHardcodeBoardCols;
-        var digitsOnNewBoard = appSettings?.DigitsOnNewBoard ?? defaultHardcodeDigitsOnNewBoard;
-
-        var scoreColor = appSettings?.ScoreColor != null
-            ? Color.FromName(appSettings.ScoreColor)
-            : defaultHardcodeScoreColor;
-        var textFontColor = appSettings?.ScoreColor != null
-            ? Color.FromName(appSettings.TextFontColor)
-            : defaultHardcodeTextFontColor;
+        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: true).Build();
+        config.GetSection("GameSettings").Bind(gameSettings);
+        config.GetSection("ColorSettings").Bind(colorSettings);
 
         // Start game
-        var game = new Game();
-        var gameState = game.Init(boardRows, boardCols, digitsOnNewBoard);
+        var gameState = game.Init(gameSettings.BoardRows, gameSettings.BoardCols, gameSettings.DigitsOnNewBoard);
         Console.CursorVisible = false;
 
         while (true)
         {
-            ConsoleIo.ScreenView(gameState, textFontColor, scoreColor);
+            ConsoleIo.ScreenView(gameState, colorSettings);
 
             Direction? direction = null;
             var input = Console.ReadKey(true);
@@ -65,7 +36,7 @@ internal static class ConsoleApp
             }
             else if (input.Key == ConsoleKey.N) // New game
             {
-                gameState = game.Init(boardRows, boardCols, digitsOnNewBoard);
+                gameState = game.Init(gameSettings.BoardRows, gameSettings.BoardCols, gameSettings.DigitsOnNewBoard);
             }
             else
             {

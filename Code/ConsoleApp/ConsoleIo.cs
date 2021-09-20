@@ -3,11 +3,11 @@ using System;
 using System.Drawing;
 using Console = Colorful.Console;
 
-namespace Console_App;
+namespace ConsoleApp;
 
-internal static class ConsoleIo
+public static class ConsoleIo
 {
-    public static void ScreenView(GameState output, Color textFontColor, Color scoreColor)
+    public static void ScreenView(GameState output, ColorSettings colorSettings)
     {
         Console.Clear();
         Console.Write(Environment.NewLine);
@@ -16,7 +16,7 @@ internal static class ConsoleIo
         {
             for (var cols = 0; cols < output.Board.GetLength(1); cols++)
             {
-                Console.Write($"{output.Board[rows, cols],5}", Colors.FontColor(output.Board[rows, cols]));
+                Console.Write($"{output.Board[rows, cols],5}", Colors.FontColor(output.Board[rows, cols], colorSettings));
             }
 
             Console.Write(Environment.NewLine + Environment.NewLine);
@@ -24,10 +24,10 @@ internal static class ConsoleIo
 
         if (output.IsGameOver)
         {
-            Console.Write(" Game is over! ", scoreColor);
+            Console.Write(" Game is over! ", colorSettings.ScoreColor);
         }
 
-        Console.WriteLine($" Score: {output.Score}" + Environment.NewLine, scoreColor);
-        Console.Write(" Use arrow keys to move the tiles. Press N for new game, Q to exit.", textFontColor);
+        Console.WriteLine($" Score: {output.Score}" + Environment.NewLine, colorSettings.ScoreColor);
+        Console.Write(" Use arrow keys to move the tiles. Press N for new game, Q to exit.", colorSettings.TextColor);
     }
 }

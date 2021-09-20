@@ -5,7 +5,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Version>0.1</Version>
     <PackageId>Game2048ConsoleApp</PackageId>
-    <Authors>Mihail Emelyanov war4one@gmail.com</Authors>
+    <Authors>Mihail Emelyanov, war4one@gmail.com, github.com/amaargiru</Authors>
     <Company />
   </PropertyGroup>
 
