@@ -1,7 +1,8 @@
-﻿//using Console_App;
-using GameCore;
+﻿using GameCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
+using System.IO;
 using Console = Colorful.Console;
 
 namespace ConsoleApp;
@@ -10,18 +11,39 @@ internal static class ConsoleApp
 {
     private static void Main()
     {
+        var settingsFile = "appsettings.json";
+        var savedGameFile = "gamestate.json";
+
         var game = new Game();
+        var gameState = new GameState();
         var gameSettings = new GameSettings();
         var colorSettings = new ColorSettings();
 
-        // Binding appsettings.json
-        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: true).Build();
+        Console.CursorVisible = false;
+
+        // Binding settings from json
+        var config = new ConfigurationBuilder().AddJsonFile(settingsFile, optional: true).Build();
         config.GetSection("GameSettings").Bind(gameSettings);
         config.GetSection("ColorSettings").Bind(colorSettings);
 
-        // Start game
-        var gameState = game.Init(gameSettings.BoardRows, gameSettings.BoardCols, gameSettings.DigitsOnNewBoard);
-        Console.CursorVisible = false;
+        if (File.Exists(savedGameFile))
+        {
+            try
+            {
+                // Binding saved game from json
+                gameState = JsonConvert.DeserializeObject<GameState>(File.ReadAllText(savedGameFile));
+            }
+            catch
+            {
+                // Start default game
+                gameState = game.Init(gameSettings.BoardRows, gameSettings.BoardCols, gameSettings.DigitsOnNewBoard);
+            }
+        }
+        else
+        {
+            // Start default game
+            gameState = game.Init(gameSettings.BoardRows, gameSettings.BoardCols, gameSettings.DigitsOnNewBoard);
+        }
 
         while (true)
         {
@@ -30,12 +52,15 @@ internal static class ConsoleApp
             Direction? direction = null;
             var input = Console.ReadKey(true);
 
-            if (input.Key == ConsoleKey.Q) // Exit game
+            if (input.Key == ConsoleKey.Q)
             {
+                // Save and exit game
+                File.WriteAllText(savedGameFile, JsonConvert.SerializeObject(gameState, Formatting.Indented));
                 Environment.Exit(0);
             }
-            else if (input.Key == ConsoleKey.N) // New game
+            else if (input.Key == ConsoleKey.N)
             {
+                // Start default game
                 gameState = game.Init(gameSettings.BoardRows, gameSettings.BoardCols, gameSettings.DigitsOnNewBoard);
             }
             else

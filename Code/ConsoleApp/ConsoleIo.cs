@@ -1,6 +1,5 @@
 ﻿using GameCore;
 using System;
-using System.Drawing;
 using Console = Colorful.Console;
 
 namespace ConsoleApp;
@@ -10,7 +9,7 @@ public static class ConsoleIo
     public static void ScreenView(GameState output, ColorSettings colorSettings)
     {
         Console.Clear();
-        Console.Write(Environment.NewLine);
+        Console.WriteLine();
 
         for (var rows = 0; rows < output.Board.GetLength(0); rows++)
         {
@@ -28,6 +27,6 @@ public static class ConsoleIo
         }
 
         Console.WriteLine($" Score: {output.Score}" + Environment.NewLine, colorSettings.ScoreColor);
-        Console.Write(" Use arrow keys to move the tiles. Press N for new game, Q to exit.", colorSettings.TextColor);
+        Console.Write(" Use arrow keys to move the tiles. Press N for new game, Q for save and exit.", colorSettings.TextColor);
     }
 }
