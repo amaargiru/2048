@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameCore", "GameCore\GameCo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{9487AE2A-D9CF-492D-B28B-4BF82E2C7AB7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{4B89F9E0-BDAF-4573-9598-FC6AA783C4CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{9487AE2A-D9CF-492D-B28B-4BF82E2C7AB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9487AE2A-D9CF-492D-B28B-4BF82E2C7AB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9487AE2A-D9CF-492D-B28B-4BF82E2C7AB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B89F9E0-BDAF-4573-9598-FC6AA783C4CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B89F9E0-BDAF-4573-9598-FC6AA783C4CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B89F9E0-BDAF-4573-9598-FC6AA783C4CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B89F9E0-BDAF-4573-9598-FC6AA783C4CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
