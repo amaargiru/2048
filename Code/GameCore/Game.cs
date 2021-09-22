@@ -16,13 +16,12 @@ public class Game
 {
     private static readonly Random random = new();
 
-    // Генерация начального состояния игрового поля
+    // Generate the initial game board
     public GameState Init(int rows, int cols, int tilesOnNewBoard)
     {
         if (tilesOnNewBoard > rows * cols)
         {
-            throw new ArgumentOutOfRangeException
-            (nameof(tilesOnNewBoard),
+            throw new ArgumentOutOfRangeException(nameof(tilesOnNewBoard),
                 "Number of non-zero tiles is greater than total number of tiles," +
                 $" i.e. {nameof(tilesOnNewBoard)} > {nameof(rows)} * {nameof(cols)}.");
         }
@@ -32,49 +31,43 @@ public class Game
             throw new ArgumentOutOfRangeException($"Number of {(rows < 2 ? nameof(rows) : nameof(cols))} must be greater than 1");
         }
 
-        var initState = new GameState
+        return new GameState
         {
-            Board = new ulong[rows, cols],
+            Board = AddNewRandomTiles(new ulong[rows, cols], tilesOnNewBoard),
             Score = 0,
             IsGameOver = false
         };
-
-        // Добавляем на пустое игровое поле ячейки с цифрами
-        initState.Board = AddNewRandomTiles(initState.Board, tilesOnNewBoard);
-
-        return initState;
     }
 
-    // Вычисление следующей конфигурации игрового поля после хода игрока
-    public GameState NextState(GameState inputState, Direction? direction, int newSlots)
+    // Calculation of next configuration of the game board after the gamer's turn
+    public GameState NextState(GameState inputState, Direction? direction, int newTiles)
     {
-        if (newSlots > inputState.Board.GetLength(0) * inputState.Board.GetLength(1))
-            throw new ArgumentOutOfRangeException
-            ("Число ячеек игрового поля, которые должны быть заполнены, больше, чем общее число ячеек." +
-             $" Сейчас {inputState.Board.GetLength(0)} (колонки) * {inputState.Board.GetLength(1)} (столбцы)" +
-             $"< {newSlots} (новые ячейки).");
+        if (newTiles > inputState.Board.GetLength(0) * inputState.Board.GetLength(1))
+        {
+            throw new ArgumentOutOfRangeException("Number of non-zero tiles is greater than total number of tiles," +
+             $" i.e. {newTiles} (new tiles) > {inputState.Board.GetLength(0)} (columns) * {inputState.Board.GetLength(1)} (rows).");
+        }
 
         var nextState = Update(inputState, direction);
 
-        // Если ни одно движение не приводит к изменениям, то игра закончена
+        // If no movement leads to change, then the game is over
         if (!TryToMove(nextState.Board))
         {
             nextState.IsGameOver = true;
             return nextState;
         }
 
-        // Возможна ситуация, когда ход игрока не приводит к сложению и/или перемещению ячеек
-        // В таком случае новых ячеек добавлять не нужно
+        // It's possible that the gamer's move doesn't sum and/or move tiles
+        // In this case it isn't necessary to add new tiles
         if (Utility.CompareMultidimensionalArrays(inputState.Board, nextState.Board))
         {
             return nextState;
         }
 
-        // Возможна ситуация, когда свободных ячеек меньше, чем количество
-        // новых ячеек, которые мы желаем добавить
-        var freeSlots = nextState.Board.Length - Utility.Calculate2DArrayNonZeroValues(nextState.Board);
-        var addedSlots = Math.Min(newSlots, freeSlots);
-        AddNewRandomTiles(nextState.Board, addedSlots);
+        // It's possible that the number of empty tiles is less than the number of new tiles that we wish to add
+        var freeTiles = nextState.Board.Length - Utility.Calculate2DArrayNonZeroValues(nextState.Board);
+        var addedTiles = Math.Min(newTiles, freeTiles);
+        AddNewRandomTiles(nextState.Board, addedTiles);
 
         return nextState;
     }
@@ -94,11 +87,11 @@ public class Game
         var maxRow = inputState.Board.GetLength(0);
         var maxCol = inputState.Board.GetLength(1);
 
-        // В зависимости от направления движения нам понадобится только maxRow или maxCol
-        var Lines = isHorizontalMove ? maxRow : maxCol;
+        // Depending on the direction of movement, we only need maxRow or maxCol
+        var lines = isHorizontalMove ? maxRow : maxCol;
         var maxNumInLine = isHorizontalMove ? maxCol : maxRow;
 
-        // Выделяем из двумерного массива одну строку или столбец
+        // Extract one row or one column from a two-dimensional array
         var extractLine = isHorizontalMove
             ? new Func<ulong[,], int, ulong[]>((board, num) => Enumerable.Range(0, maxCol)
                 .Select(x => board[num, x]).ToArray())
@@ -108,32 +101,35 @@ public class Game
         var condition = isIncreasing ? new Func<int, int, bool>((a, b) => a < b - 1) : (a, b) => a >= 0;
         var change = isIncreasing ? new Func<int, int>(j => j + 1) : j => j - 1;
 
-        // Сдвиг всех ненулевых элементов массива к началу или к концу
+        // Shift all non-zero elements
         var shift = isIncreasing
             ? new Func<ulong[], ulong[]>(a => a.OrderBy(x => x == 0).ToArray())
             : a => a.OrderByDescending(x => x == 0).ToArray();
 
-        // Для вставки строки используем быстрый метод Buffer.BlockCopy, а для вставки столбца - цикл
+        // To insert a row, use the fast Buffer.BlockCopy method, and use a "for" to insert a column
         var insertLine = isHorizontalMove
             ? new Action<ulong[,], ulong[], int>((board, row, i) =>
                 Buffer.BlockCopy(row, 0, board, i * maxCol * sizeof(ulong), maxNumInLine * sizeof(ulong)))
             : (board, col, i) =>
             {
-                for (var j = 0; j < maxNumInLine; j++) board[j, i] = col[j];
+                for (var j = 0; j < maxNumInLine; j++)
+                {
+                    board[j, i] = col[j];
+                }
             };
 
         var line = new ulong[maxNumInLine];
 
-        // Перебор строк или столбцов (в зависимости от хода игрока)
-        for (var i = 0; i < Lines; i++)
+        // Iteration of rows or columns (depending on the gamer's move)
+        for (var i = 0; i < lines; i++)
         {
-            // Выделяем одномерный массив из общего двумерного
+            // Extract 1D array from 2D array
             line = extractLine(updateState.Board, i);
 
-            // Сдвигаем все ненулевые элементы
+            // Shift all non-zero elements
             line = shift(line);
 
-            // Суммируем одинаковые значения и вычисляем заработанные очки
+            // Sum equal tiles and calculate score
             for (var j = isIncreasing ? 0 : maxNumInLine - 2; condition(j, maxNumInLine); j = change(j))
             {
                 if (line[j] != 0 && line[j] == line[j + 1])
@@ -150,21 +146,21 @@ public class Game
                 }
             }
 
-            // Убираем нулевые значения, которые могли остаться между просуммированными парами
+            // Shift all non-zero elements, if there are appeared
             line = shift(line);
 
-            // Вставляем обработанный одномерный массив на свое место в общий двумерный массив
+            // Insert 1D array to 2D array
             insertLine(updateState.Board, line, i);
         }
 
         return updateState;
     }
 
-    // Добавление новых ячеек на игровое поле
+    // Add new tiles to game board
     private ulong[,] AddNewRandomTiles(ulong[,] board, int newDigits)
     {
-        // Список всех свободных позиций
-        var freeSlots = new List<(int x, int y)>();
+        // List of all empty tiles
+        var freeTiles = new List<(int x, int y)>();
 
         for (var rows = 0; rows < board.GetLength(0); rows++)
         {
@@ -172,20 +168,19 @@ public class Game
             {
                 if (board[rows, cols] == 0)
                 {
-                    freeSlots.Add((rows, cols));
+                    freeTiles.Add((rows, cols));
                 }
             }
         }
 
         for (var i = 0; i < newDigits; i++)
         {
-            var r = random.Next(freeSlots.Count);
+            var r = random.Next(freeTiles.Count);
 
-            // Новая ячейка, появляющаяся на игровом поле после очередного хода,
-            // должна быть двойкой с вероятностью 90 % или четверкой с вероятностью 10 %
-            board[freeSlots[r].x, freeSlots[r].y] = random.NextDouble() < 90.0 / 100.0 ? 2ul : 4ul;
+            // The new tile must be 2 with 90% probability or 4 with 10% probability
+            board[freeTiles[r].x, freeTiles[r].y] = random.NextDouble() < 90.0 / 100.0 ? 2ul : 4ul;
 
-            freeSlots.RemoveAt(r);
+            freeTiles.RemoveAt(r);
         }
 
         return board;
@@ -195,7 +190,7 @@ public class Game
     {
         foreach (Direction dir in Enum.GetValues(typeof(Direction)))
         {
-            var cloneIn = new GameState{ Board = (ulong[,])board.Clone() };
+            var cloneIn = new GameState { Board = (ulong[,])board.Clone() };
 
             var cloneOut = Update(cloneIn, dir);
 

@@ -7,7 +7,7 @@ using Console = Colorful.Console;
 
 namespace ConsoleApp;
 
-internal static class ConsoleApp
+internal static class ConsoleGame
 {
     private static void Main()
     {

@@ -147,57 +147,51 @@ public class GameTests
     [TestCase(100, 100, 100)]
     [TestCase(999, 2, 99)]
     [TestCase(1000, 1000, 1000)]
-    public void Init_BasicFunctionality(int cols, int rows, int digitsOnNewBoard)
+    public void Init_BasicFunctionalityTest(int cols, int rows, int digitsOnNewBoard)
     {
         var game = new Game();
         var state = game.Init(rows, cols, digitsOnNewBoard);
 
-        Assert.IsTrue(state.Board.Rank == 2, "Игровое поле имеет количество измерений, отличное от 2");
-        Assert.IsTrue(state.Board.GetType() == typeof(ulong[,]), "Игровое поле имеет тип, отличный от long[,]");
-        Assert.IsTrue(state.Board.GetLength(0) == rows, "Количество строк игрового поля отличается от заданного");
-        Assert.IsTrue(state.Board.GetLength(1) == cols, "Количество столбцов игрового поля отличается от заданного");
-        Assert.IsTrue(Utility.Calculate2DArrayNonZeroValues(state.Board) == digitsOnNewBoard,
-            "Количество ненулевых элементов игрового поля отличается от заданного");
+        Assert.IsTrue(state.Board.Rank == 2, "Game board's rank is not 2");
+        Assert.IsTrue(state.Board.GetType() == typeof(ulong[,]), "Game bord's type is not ulong[,]");
+        Assert.IsTrue(state.Board.GetLength(0) == rows, "Wrong row's number");
+        Assert.IsTrue(state.Board.GetLength(1) == cols, "Wrong columns' number");
+        Assert.IsTrue(Utility.Calculate2DArrayNonZeroValues(state.Board) == digitsOnNewBoard, "Wrong non-zero elements' number");
     }
 
-    // Если число ячеек игрового поля, которые должны быть заполнены в начале игры, больше, чем общее число ячеек,
-    // должно быть выдано исключение
     [TestCase(1, 1, 2)]
     [TestCase(10, 10, 10 * 10 + 1)]
     [TestCase(100, 100, 100 * 100 + 1)]
-    public void Init_TooManyTilesOnNewBoardThrowsException(int cols, int rows, int tilesOnNewBoard)
+    public void Init_TooManyTilesOnNewBoardThrowsExceptionTest(int cols, int rows, int tilesOnNewBoard)
     {
         var game = new Game();
         Assert.Throws<ArgumentOutOfRangeException>(() => game.Init(rows, cols, tilesOnNewBoard));
     }
 
-    // Если размер игрового поля меньше 2 по любой оси, должно быть выдано исключение
     [TestCase(1, 1, 1)]
     [TestCase(2, 1, 1)]
     [TestCase(1, 2, 1)]
-    public void Init_TooSmallBoardThrowsException(int cols, int rows, int digitsOnNewBoard)
+    public void Init_TooSmallBoardThrowsExceptionTest(int cols, int rows, int digitsOnNewBoard)
     {
         var game = new Game();
         Assert.Throws<ArgumentOutOfRangeException>(() => game.Init(rows, cols, digitsOnNewBoard));
     }
 
     [TestCaseSource(typeof(States), nameof(States.NextStateTestCases))]
-    public GameState NextState_BasicFunctionality(GameState input, Direction direction, int newSlots)
+    public GameState NextState_BasicFunctionalityTest(GameState input, Direction direction, int newTiles)
     {
         var game = new Game();
-        return game.NextState(input, direction, newSlots);
+        return game.NextState(input, direction, newTiles);
     }
 
-    // Если число свободных ячеек игрового поля, которые должны быть заполнены, больше, чем общее число ячеек,
-    // должно быть выдано исключение
     [TestCaseSource(typeof(ExceptionStates), nameof(ExceptionStates.NextStateExceptionTestCases))]
-    public void NextState_TooBigNewSlotsThrowsException(GameState input, Direction direction, int newSlots)
+    public void NextState_TooManyNewTilesThrowsExceptionTest(GameState input, Direction direction, int newTiles)
     {
         var game = new Game();
-        Assert.Throws<ArgumentOutOfRangeException>(() => game.NextState(input, direction, newSlots));
+        Assert.Throws<ArgumentOutOfRangeException>(() => game.NextState(input, direction, newTiles));
     }
 
-    // Data set for NextState_BasicFunctionality
+    // Data set for NextState_BasicFunctionalityTest
     public static class States
     {
         public static IEnumerable NextStateTestCases
@@ -218,7 +212,7 @@ public class GameTests
         }
     }
 
-    // Data set for NextState_TooBigNewSlotsThrowsException
+    // Data set for NextState_TooManyNewTilesThrowsExceptionTest
     public static class ExceptionStates
     {
         public static IEnumerable NextStateExceptionTestCases

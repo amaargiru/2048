@@ -7,27 +7,25 @@ namespace Tests;
 
 public class GameStateTests
 {
-    // Свойство Score класса GameState не должно принимать нечетные значения
     [TestCase(1UL)]
     [TestCase(11UL)]
     [TestCase(2049UL)]
-    public void SetOddScore_ThrowsException(ulong score)
+    public void SetOddScore_ThrowsExceptionTest(ulong score)
     {
         var gameState = new GameState();
 
         Assert.Throws<ArgumentOutOfRangeException>(() => gameState.Score = score);
     }
 
-    // Массив Board класса GameState не должен иметь ни одну размерность меньше 2
     [TestCaseSource(typeof(GameStates), nameof(GameStates.GameStateTestCases))]
-    public void SetTooSmallBoard_ThrowsException(ulong[,] board)
+    public void SetTooSmallBoard_ThrowsExceptionTest(ulong[,] board)
     {
         var gameState = new GameState();
 
         Assert.Throws<ArgumentOutOfRangeException>(() => gameState.Board = board);
     }
 
-    // Data set for SetTooSmallBoard_ThrowsException
+    // Data set for SetTooSmallBoard_ThrowsExceptionTest
     public static class GameStates
     {
         public static IEnumerable GameStateTestCases

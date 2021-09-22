@@ -16,11 +16,10 @@ internal class ConsoleColorsTests
     [TestCase(1024UL)]
     [TestCase(131072UL)]
     [TestCase(8388608UL)]
-    // На каждое число, являющееся степенью двойки, метод FontColor должен вернуть System.Drawing.Color
+    // If number is power of two or zero, method must returns System.Drawing.Color
     public void FontColor_BasicFunctionality(ulong num)
     {
         var color = Colors.FontColor(num, new ColorSettings());
-
         Assert.IsNotNull(color);
     }
 
@@ -28,7 +27,7 @@ internal class ConsoleColorsTests
     [TestCase(5UL)]
     [TestCase(99UL)]
     [TestCase(1000001UL)]
-    // На каждое число, не являющееся степенью двойки, метод FontColor должен вернуть ArgumentOutOfRangeException
+    // If number is not power of two or zero, method must returns ArgumentOutOfRangeException
     public void FontColor_NotPowerOfTwoThrowsException(ulong num)
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => Colors.FontColor(num, new ColorSettings()));

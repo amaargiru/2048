@@ -1,5 +1,6 @@
-﻿namespace ConsoleApp;
-using System.Drawing;
+﻿using System.Drawing;
+
+namespace ConsoleApp;
 
 public class ColorSettings
 {
