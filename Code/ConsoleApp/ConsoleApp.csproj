@@ -7,6 +7,7 @@
     <PackageId>Game2048ConsoleApp</PackageId>
     <Authors>Mihail Emelyanov, war4one@gmail.com, github.com/amaargiru</Authors>
     <Company />
+    <ApplicationIcon>2048.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -17,6 +18,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="2048.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Colorful.Console" Version="1.2.15" />
