@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GameCore;
+﻿namespace GameCore;
 
 public class GameState
 {

@@ -1,5 +1,4 @@
 ﻿using GameCore;
-using System;
 using Console = Colorful.Console;
 
 namespace ConsoleApp;

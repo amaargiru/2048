@@ -1,8 +1,6 @@
 ﻿using GameCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System;
-using System.IO;
 using Console = Colorful.Console;
 
 namespace ConsoleApp;

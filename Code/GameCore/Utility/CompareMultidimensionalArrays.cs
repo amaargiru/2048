@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace GameCore;
+﻿namespace GameCore;
 
 public static partial class Utility
 {
