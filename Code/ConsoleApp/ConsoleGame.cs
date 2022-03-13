@@ -1,6 +1,7 @@
 ﻿using GameCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Serilog;
 using Console = Colorful.Console;
 
 namespace ConsoleApp;
@@ -42,6 +43,16 @@ internal static class ConsoleGame
             // Start default game
             gameState = game.Init(gameSettings.BoardRows, gameSettings.BoardCols, gameSettings.DigitsOnNewBoard);
         }
+
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.File(@"log\log2048.txt",
+                fileSizeLimitBytes: 1000_000,
+                retainedFileCountLimit: 5,
+                rollOnFileSizeLimit: true)
+            .CreateLogger();
+
+        Log.Debug("Game starts");
 
         while (true)
         {
