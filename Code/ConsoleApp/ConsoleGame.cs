@@ -13,10 +13,19 @@ internal static class ConsoleGame
         var settingsFile = "appsettings.json";
         var savedGameFile = "gamestate.json";
 
+        GameState gameState;
         var game = new Game();
-        var gameState = new GameState();
         var gameSettings = new GameSettings();
         var colorSettings = new ColorSettings();
+
+        // Logging into file only, console is for game
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.File(@"log\log2048.txt",
+                fileSizeLimitBytes: 1000_000,
+                retainedFileCountLimit: 5,
+                rollOnFileSizeLimit: true)
+            .CreateLogger();
 
         Console.CursorVisible = false;
 
@@ -44,14 +53,6 @@ internal static class ConsoleGame
             gameState = game.Init(gameSettings.BoardRows, gameSettings.BoardCols, gameSettings.DigitsOnNewBoard);
         }
 
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .WriteTo.File(@"log\log2048.txt",
-                fileSizeLimitBytes: 1000_000,
-                retainedFileCountLimit: 5,
-                rollOnFileSizeLimit: true)
-            .CreateLogger();
-
         Log.Debug("Game starts");
 
         while (true)
@@ -64,6 +65,7 @@ internal static class ConsoleGame
             if (input.Key == ConsoleKey.Q)
             {
                 // Save and exit game
+                Log.Debug("Game over!");
                 File.WriteAllText(savedGameFile, JsonConvert.SerializeObject(gameState, Formatting.Indented));
                 Environment.Exit(0);
             }
